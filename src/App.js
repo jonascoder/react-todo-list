@@ -6,25 +6,46 @@ import TodoList from "./components/TodoList";
 // comment test
 class App extends Component {
   state = {
-    items: [{ id: 1, title: "wake up" }, { id: 2, title: "make breackfast" }],
+    items: [],
     id: uuid(),
     item: "",
     editItem: false
   };
   handleChange = e => {
-    console.log("handle change");
+    this.setState({
+      item: e.target.value
+    });
   };
   handleSubmit = e => {
-    console.log("handle submit");
+    e.preventDefault();
+    const newItem = {
+      id: this.state.id,
+      title: this.state.item
+    };
+    const updatedItems = [...this.state.items, newItem];
+    this.setState({
+      items: updatedItems,
+      item: "",
+      id: uuid(),
+      editItem: false
+    });
   };
   clearList = e => {
-    console.log("clear list");
+    this.setState({ items: [] });
   };
   handleDelete = id => {
-    console.log(`handle edit${id}`);
+    const filteredItems = this.state.items.filter(item => item.id !== id);
+    this.setState({ items: filteredItems });
   };
   handleEdit = id => {
-    console.log(`edit edit${id}`);
+    const filteredItems = this.state.items.filter(item => item.id !== id);
+    const selectedItem = this.state.items.find(item => item.id === id);
+    this.setState({
+      items: filteredItems,
+      item: selectedItem.title,
+      id: id,
+      editItem: true
+    });
   };
   render() {
     return (
@@ -36,7 +57,7 @@ class App extends Component {
               item={this.state.item}
               handleChange={this.handleChange}
               handleSubmit={this.handleSubmit}
-              editItem={this.editItem}
+              editItem={this.state.editItem}
             />
             <TodoList
               items={this.state.items}
